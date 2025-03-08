@@ -6,9 +6,9 @@ using System.IO;
 using System.Collections.Generic;
 
 [Sharpmake.Generate]
-public class NVRHIProject : Sharpmake.Project
+public class NVRHI : Sharpmake.Project
 {
-	public NVRHIProject()
+	public NVRHI()
 	{
 		Name = "NVRHI";
 		IsFileNameToLower = false;
@@ -28,25 +28,25 @@ public class NVRHIProject : Sharpmake.Project
 	{
 		Config.Output = Configuration.OutputType.Lib;
 		Config.ProjectPath = TinfoilSolution.GetProjectFileFolder();
-        Config.TargetPath = TinfoilSolution.GetBinaryFolder(Name, Target);
+		Config.TargetPath = TinfoilSolution.GetBinaryFolder(Name, Target);
 		Config.IntermediatePath = TinfoilSolution.GetIntermediateFolder(Name, Target);
 
 		Config.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
 		Config.Options.Add(Options.Vc.Compiler.Exceptions.EnableWithSEH);
 		Config.Options.Add(Options.Vc.Compiler.RTTI.Enable);
-        Config.Options.Add(Options.Vc.General.WindowsTargetPlatformVersion.Latest);
+		Config.Options.Add(Options.Vc.General.WindowsTargetPlatformVersion.Latest);
 		Config.Options.Add(Options.Vc.Librarian.TreatLibWarningAsErrors.Enable);
 
-        Config.IncludePaths.Add(@"/include");
-        Config.IncludePaths.Add(@"/rtxmu/include");
-        Config.IncludePaths.Add(@"/thirdparty/Vulkan-Headers/include");
+		Config.IncludePaths.Add(@"/include");
+		Config.IncludePaths.Add(@"/rtxmu/include");
+		Config.IncludePaths.Add(@"/thirdparty/Vulkan-Headers/include");
 
 		Config.Defines.Add("NOMINMAX");
 
-        // Exclude files
-        List<string> ExcludedFolders = new List<string>();
+		// Exclude files
+		List<string> ExcludedFolders = new List<string>();
 		ExcludedFolders.Add("tools/shaderCompiler");
-        ExcludedFolders.Add("Vulkan-Headers/tests");
+		ExcludedFolders.Add("Vulkan-Headers/tests");
 
 		if (Target.Platform == Platform.win64)
 		{
@@ -58,6 +58,6 @@ public class NVRHIProject : Sharpmake.Project
 			ExcludedFolders.Add("d3d12");
 		}
 
-        Config.SourceFilesBuildExcludeRegex.Add(@"\.*\/(" + string.Join("|", ExcludedFolders.ToArray()) + @")\/");
+		Config.SourceFilesBuildExcludeRegex.Add(@"\.*\/(" + string.Join("|", ExcludedFolders.ToArray()) + @")\/");
 	}
 }
