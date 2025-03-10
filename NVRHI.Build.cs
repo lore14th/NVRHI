@@ -6,58 +6,43 @@ using System.IO;
 using System.Collections.Generic;
 
 [Sharpmake.Generate]
-public class NVRHI : Sharpmake.Project
+public class NVRHI : TinfoilProjectBase
 {
 	public NVRHI()
 	{
 		Name = "NVRHI";
-		IsFileNameToLower = false;
-		IsTargetFileNameToLower = false;
-
 		SourceFiles.Add("NVRHI.Build.cs");
-		
-		AddTargets(new Target(
-			Platform.win64,
-			DevEnv.vs2022,
-			Optimization.Debug | Optimization.Release)
-		);
 	}
 
 	[Sharpmake.Configure]
-	public void ConfigureAll(Project.Configuration Config, Target Target)
+	public void ConfigureAll(Project.Configuration config, Target target)
 	{
-		Config.Output = Configuration.OutputType.Lib;
-		Config.ProjectPath = TinfoilSolution.GetProjectFileFolder();
-		Config.TargetPath = TinfoilSolution.GetBinaryFolder(Name, Target);
-		Config.IntermediatePath = TinfoilSolution.GetIntermediateFolder(Name, Target);
+		config.Output = Configuration.OutputType.Lib;
 
-		Config.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
-		Config.Options.Add(Options.Vc.Compiler.Exceptions.EnableWithSEH);
-		Config.Options.Add(Options.Vc.Compiler.RTTI.Enable);
-		Config.Options.Add(Options.Vc.General.WindowsTargetPlatformVersion.Latest);
-		Config.Options.Add(Options.Vc.Librarian.TreatLibWarningAsErrors.Enable);
+		config.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
+		config.Options.Add(Options.Vc.Compiler.Exceptions.EnableWithSEH);
+		config.Options.Add(Options.Vc.Compiler.RTTI.Enable);
+		config.Options.Add(Options.Vc.General.WindowsTargetPlatformVersion.Latest);
+		config.Options.Add(Options.Vc.Librarian.TreatLibWarningAsErrors.Enable);
 
-		Config.IncludePaths.Add(@"/include");
-		Config.IncludePaths.Add(@"/rtxmu/include");
-		Config.IncludePaths.Add(@"/thirdparty/Vulkan-Headers/include");
+		config.IncludePaths.Add(@"/include");
+		config.IncludePaths.Add(@"/rtxmu/include");
+		config.IncludePaths.Add(@"/thirdparty/Vulkan-Headers/include");
 
-		Config.Defines.Add("NOMINMAX");
+		config.Defines.Add("NOMINMAX");
 
 		// Exclude files
-		List<string> ExcludedFolders = new List<string>();
-		ExcludedFolders.Add("tools/shaderCompiler");
-		ExcludedFolders.Add("Vulkan-Headers/tests");
+		ExcludeFolder(config, target, "tools/shaderCompiler");
+		ExcludeFolder(config, target, "Vulkan-Headers/tests");
 
-		if (Target.Platform == Platform.win64)
+		if (target.Platform == Platform.win64)
 		{
-			Config.Defines.Add("VK_USE_PLATFORM_WIN32_KHR");
+			config.Defines.Add("VK_USE_PLATFORM_WIN32_KHR");
 		}
 		else
 		{
-			ExcludedFolders.Add("d3d11");
-			ExcludedFolders.Add("d3d12");
+			ExcludeFolder(config, target, "d3d11");
+			ExcludeFolder(config, target, "d3d12");
 		}
-
-		Config.SourceFilesBuildExcludeRegex.Add(@"\.*\/(" + string.Join("|", ExcludedFolders.ToArray()) + @")\/");
 	}
 }
