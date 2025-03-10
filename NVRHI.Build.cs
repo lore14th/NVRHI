@@ -15,7 +15,7 @@ public class NVRHI : TinfoilProjectBase
 	}
 
 	[Sharpmake.Configure]
-	public void ConfigureAll(Project.Configuration config, Target target)
+	public void ConfigureAll(Project.Configuration config, TinfoilTarget target)
 	{
 		config.Output = Configuration.OutputType.Lib;
 
