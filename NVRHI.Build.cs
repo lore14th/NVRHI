@@ -32,8 +32,8 @@ public class NVRHI : TinfoilProjectBase
 		config.Defines.Add("NOMINMAX");
 
 		// Exclude files
-		ExcludeFolder(config, target, "tools/shaderCompiler");
-		ExcludeFolder(config, target, "Vulkan-Headers/tests");
+		ExcludeFolder(config, target, "shaderCompiler");
+		ExcludeFolder(config, target, "tests");
 
 		if (target.Platform == Platform.win64)
 		{
