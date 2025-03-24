@@ -31,12 +31,14 @@ public class NVRHI : TinfoilProjectBase
 		config.IncludePaths.Add(@"/thirdparty/Vulkan-Headers/include");
 
 		config.Defines.Add("NOMINMAX"); // windows only
-		//config.Defines.Add("NVRHI_WITH_AFTERMATH"); // TODO: 
+		
+		// Aftermath is distributed separately from NVRHI
+		config.Defines.Add("NVRHI_WITH_AFTERMATH");
+		config.IncludePaths.Add(@"../NsightAftermathSDK/include");
 
 		// Exclude files
 		ExcludeFolder(config, target, "shaderCompiler");
 		ExcludeFolder(config, target, "tests");
-
 
 		List<ERenderingAPI> availableAPIs = base.GetAvailableRenderingAPIs(target);
 		if (!availableAPIs.Contains(ERenderingAPI.NV_D3D11))
