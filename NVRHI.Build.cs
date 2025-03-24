@@ -18,6 +18,7 @@ public class NVRHI : TinfoilProjectBase
 	public void ConfigureAll(Project.Configuration config, TinfoilTarget target)
 	{
 		config.Output = Configuration.OutputType.Lib;
+		config.Defines.Add("NVRHI_SHARED_LIBRARY_BUILD=0");
 
 		config.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
 		config.Options.Add(Options.Vc.Compiler.Exceptions.EnableWithSEH);
@@ -29,20 +30,36 @@ public class NVRHI : TinfoilProjectBase
 		config.IncludePaths.Add(@"/rtxmu/include");
 		config.IncludePaths.Add(@"/thirdparty/Vulkan-Headers/include");
 
-		config.Defines.Add("NOMINMAX");
+		config.Defines.Add("NOMINMAX"); // windows only
+		//config.Defines.Add("NVRHI_WITH_AFTERMATH"); // TODO: 
 
 		// Exclude files
 		ExcludeFolder(config, target, "shaderCompiler");
 		ExcludeFolder(config, target, "tests");
 
-		if (target.Platform == Platform.win64)
+
+		List<ERenderingAPI> availableAPIs = base.GetAvailableRenderingAPIs(target);
+		if (!availableAPIs.Contains(ERenderingAPI.NV_D3D11))
 		{
-			config.Defines.Add("VK_USE_PLATFORM_WIN32_KHR");
+			ExcludeFolder(config, target, "d3d11");
+		}
+		if (!availableAPIs.Contains(ERenderingAPI.NV_D3D12))
+		{
+			ExcludeFolder(config, target, "d3d12");
+		}
+		if (availableAPIs.Contains(ERenderingAPI.NV_Vulkan))
+		{
+			if (target.Platform == Platform.win64)
+			{
+				config.Defines.Add("VK_USE_PLATFORM_WIN32_KHR");
+			}
+
+			config.LibraryPaths.Add(Environment.GetEnvironmentVariable("VULKAN_SDK") + @"/Lib");
+			config.LibraryFiles.Add("vulkan-1.lib");
 		}
 		else
 		{
-			ExcludeFolder(config, target, "d3d11");
-			ExcludeFolder(config, target, "d3d12");
+			ExcludeFolder(config, target, "vulkan");
 		}
 	}
 }
