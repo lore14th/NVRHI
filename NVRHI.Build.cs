@@ -34,7 +34,7 @@ public class NVRHI : TinfoilProjectBase
 		
 		// Aftermath is distributed separately from NVRHI
 		config.Defines.Add("NVRHI_WITH_AFTERMATH");
-		config.IncludePaths.Add(@"../NsightAftermathSDK/include");
+		config.AddPrivateDependency<NsightAftermath>(target, DependencySetting.Default, "ThirdParty");
 
 		// Exclude files
 		ExcludeFolder(config, target, "shaderCompiler");
